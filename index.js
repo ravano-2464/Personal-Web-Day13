@@ -1,82 +1,124 @@
-const express = require('express')
-const path = require('path')
-const app = express()
-const port = 5000
+const express = require('express');
+const path = require('path');
+const app = express();
+const port = 7000;
 
-// app.set = buat setting varible global, configuratoin, dll
-app.set("view engine", "hbs")
-app.set("views", path.join(__dirname, 'src/views'))
+app.set("view engine", "hbs");
+app.set("views", path.join(__dirname, 'src/views'));
 
-app.use("/assets", express.static(path.join(__dirname, 'src/assets')))
-app.use(express.urlencoded({ extended: false })) // body parser, extended : false -> querystring, extended : true -> menggunakan querystring third party -> qs
+app.use("/assets", express.static(path.join(__dirname, 'src/assets')));
+app.use(express.urlencoded({ extended: false }));
 
-app.get('/', home)
-app.get('/contact', contact)
-app.get('/My-Project', blog)
-app.get('/add-My-Project', addBlogView)
-app.post('/add-My-Project', addBlog)
+let data = [];
 
-app.get('/My-Project-detail/:id', blogDetail)
-app.get('/testimonial', testimonial)
+app.get('/', home);
+app.get('/contact', contact);
+app.get('/My-Project', MyProject);
+app.get('/add-My-Project', addMyProjectView);
+app.post('/add-My-Project', addMyProject);
+
+app.get('/My-Project-detail/:id', MyProjectDetail);
+app.get('/testimonial', testimonials);
+
+app.get('/update-My-Project/:id', updateMyProjectView);
+app.post('/update-My-Project/:id', updateMyProject);
+
+app.get('/delete-My-Project/:id', deleteMyProject);
+app.post('/delete-My-Project/:id', deleteMyProject);
 
 function home(req, res) {
-    res.render('index')
+    res.render('index');
 }
 
 function contact(req, res) {
-    res.render('contact')
+    res.render('contact');
 }
 
-function blog(req, res) {
-    const data = [
-        {
-            title: "Title 1",
-            content: "Content 1"
-        },
-        {
-            title: "Title 2",
-            content: "Content 2"
-        },
-        {
-            title: "Title 3",
-            content: "Content 3"
-        }
-    ]
-
-    res.render('My-Project', { data })
+function MyProject(req, res) {
+    res.render('My-Project', { data, title: "My Project" });
 }
 
-function addBlogView(req, res) {
-    res.render('add-My-Project')
+function addMyProjectView(req, res) {
+    res.render('add-My-Project');
 }
 
-function addBlog(req, res) {
-    const { title, content } = req.body
-
-    alert("Title :", title)
-    alert("Content :", content)
-    res.redirect('My-Project')
-}
-
-function blogDetail(req, res) {
-    const { id } = req.params // destructuring
-
-    const title = "Title 1"
-    const content = "Content 1"
-
-    const data = {
-        id,
+function addMyProject(req, res) {
+    const title = req.body.title;
+    const startDate = req.body.startDate;
+    const endDate = req.body.endDate;
+    const description = req.body.description;
+    const technologies = req.body.technologies;
+  
+    console.log("Project Name:", title);
+    console.log("Start Date:", startDate);
+    console.log("End Date:", endDate);
+    console.log("description:", description);
+    console.log("technologies", technologies);
+  
+    data.push({
         title,
-        content
+        startDate,
+        endDate,
+        description,
+        technologies,
+    });
+
+    res.redirect('/My-Project');
+}
+
+function MyProjectDetail(req, res) {
+    const { id } = req.params;
+    const projectDetailsData = data[id];
+    res.render('My-Project-detail', { data: projectDetailsData });
+}
+
+function testimonials(req, res) {
+    res.render('testimonial');
+}
+
+function updateMyProjectView(req, res) {
+    const { id } = req.params;
+    const editProjectData = data[+id];
+
+    if (editProjectData) {
+        editProjectData.id = id;
+        res.render('update-My-Project', { data: editProjectData });
+    } else {
+        res.redirect('/My-Project'); 
+    }
+}
+
+function updateMyProject(req, res) {
+    const { id } = req.params;
+    const { title, startDate, endDate, technologies, description } = req.body;
+    const technologiesArray = Array.isArray(technologies) ? technologies : [technologies];
+
+    if (data[+id]) {
+        data[+id] = {
+            title,
+            startDate,
+            endDate,
+            technologies: technologiesArray,
+            description,
+        };
+
+        res.redirect('/My-Project');
+    } else {
+        res.redirect('/My-Project');
+    }
+}
+
+function deleteMyProject(req, res) {
+    const { id } = req.params;
+    const index = +id;
+
+    if (index >= 0 && index < data.length) {
+        data.splice(index, 1);
     }
 
-    res.render('My-Project-detail', { data })
-}
-
-function testimonial(req, res) {
-    res.render('testimonial')
+    res.redirect('/My-Project');
 }
 
 app.listen(port, () => {
-    console.log(`Server berjalan di port ${port}`)
-})
+    console.log(`Server Berjalan Di Port ${port}`);
+});
