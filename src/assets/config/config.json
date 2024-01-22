@@ -4,20 +4,20 @@
     "password": "FerariF12",
     "database": "personal_web",
     "host": "127.0.0.1",
-    "dialect": "localhost"
+    "dialect": "postgres"
   },
   "test": {
     "username": "postgres",
     "password": "FerariF12",
     "database": "personal_web",
     "host": "127.0.0.1",
-    "dialect": "localhost"
+    "dialect": "postgres"
   },
   "production": {
     "username": "postgres",
     "password": "FerariF12",
     "database": "personal_web",
     "host": "127.0.0.1",
-    "dialect": "localhost"
+    "dialect": "postgres"
   }
 }
