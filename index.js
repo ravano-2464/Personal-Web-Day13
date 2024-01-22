@@ -26,6 +26,18 @@ app.post('/update-My-Project/:id', updateMyProject);
 app.get('/delete-My-Project/:id', deleteMyProject);
 app.post('/delete-My-Project/:id', deleteMyProject);
 
+const models = require('./src/assets/models');
+Object.values(models).forEach((model) => {
+  if (model.associate) {
+    model.associate(models);
+  }
+});
+
+app.use((req, res, next) => {
+    req.models = models;
+    next();
+  });  
+
 function home(req, res) {
     res.render('index');
 }
