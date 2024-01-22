@@ -1,1 +1,13 @@
-node_modules
+# Ignore node_modules directory
+node_modules/
+
+# Ignore Visual Studio Code settings
+.vscode/
+
+# Ignore operating system files
+Thumbs.db
+.DS_Store
+
+# Ignore logs and temporary files
+*.log
+*.tmp
